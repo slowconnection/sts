@@ -10,7 +10,14 @@ async function getMeetingData(tgt) {
     });
     res.data.values.forEach((rowitem, rowindex) => {
         rowitem.forEach((colitem, colindex) => {
-            if(colitem !== "") a.push(rowindex, colindex, colitem);
+            if(colitem !== "") {
+                let cell = [];
+                cell[0] = rowindex;
+                cell[1] = colindex;
+                cell[2] = colitem;
+
+                a.push(cell);
+            }
         })
     });
 
