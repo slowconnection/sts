@@ -1,9 +1,8 @@
-//const MeetingData = require ('./components/getSS');
+const listWS = require ('./components/listWorksheets'); 
 const getMeetingData = require ('./components/getSS'); 
 const fetch = require('node-fetch');
 const meetingListUrl = 'http://www.britishspeedwaysliders.com/stats/api/getMeetingList.php';
 const PushSQL = require('./components/writeSQL');
-const flgGrabList = true, flgGrabSS = true, flgPushSQL = true;
 
 const app = async () => {
 
@@ -26,7 +25,8 @@ const app = async () => {
     });
     
     //step 1b: list all worksheets in the target workbook
-
+    //const tgt = {spreadsheetId:"14oNLHaZHUer_i6hp0bnvyDvpNboQHEtQBi54-itLRWQ"};
+    const ws = await listWS({spreadsheetId:"14oNLHaZHUer_i6hp0bnvyDvpNboQHEtQBi54-itLRWQ"});
 
     //step 2:  populate array from the meeting SS using Google API
     //challenge: worksheet(s) may vary in the various templates
