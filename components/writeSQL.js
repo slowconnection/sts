@@ -5,7 +5,10 @@ const config = {
     database: 'STSlive_D520',
     user: 'bss_stats',
     password: 'bss_stats',
-    port: 1433
+    port: 1433,
+    options: {
+        enableArithAbort: true
+    }
 };
 
 function pushToSQL(cells) {

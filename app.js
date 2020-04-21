@@ -1,9 +1,12 @@
-const MeetingData = require ('./components/getSS');
+//const MeetingData = require ('./components/getSS');
+const getMeetingData = require ('./components/getSS'); 
 const fetch = require('node-fetch');
 const meetingListUrl = 'http://www.britishspeedwaysliders.com/stats/api/getMeetingList.php';
 const PushSQL = require('./components/writeSQL');
+const flgGrabList = true, flgGrabSS = true, flgPushSQL = true;
 
 const app = async () => {
+
     //step 1:  grab URL from BSS forum
     const response = await fetch(meetingListUrl);
     const meetings = await response.json();
@@ -21,20 +24,19 @@ const app = async () => {
       let spreadsheetUrl = postedUrls.map((url) => url.indexOf('/spreadsheets/')>0 ? url : '');
       //console.log(meeting.topic_id, meeting.topic_title, meeting.topic_first_poster_name, spreadsheetUrl);
     });
-        
+    
+    //step 1b: list all worksheets in the target workbook
+
 
     //step 2:  populate array from the meeting SS using Google API
-      //challenge: worksheet(s) may vary in the various templates
+    //challenge: worksheet(s) may vary in the various templates
     const tgt = {spreadsheetId:"14oNLHaZHUer_i6hp0bnvyDvpNboQHEtQBi54-itLRWQ", range:"15 Heat!A1:AO44"};
-    const arr = await MeetingData(tgt);
+    const arr = await getMeetingData(tgt);
 
     console.log('arr.length = ', arr.length);
 
     //step 3:  populate SQL database
-    console.log('starting mssql');
     PushSQL(arr);
-
-    console.log('ending mssql');
 
 }
 

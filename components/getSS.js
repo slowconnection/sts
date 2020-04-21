@@ -12,8 +12,8 @@ async function getMeetingData(tgt) {
         rowitem.forEach((colitem, colindex) => {
             if(colitem !== "") {
                 let cell = [];
-                cell[0] = rowindex;
-                cell[1] = colindex;
+                cell[0] = rowindex + 1;
+                cell[1] = colindex + 1;
                 cell[2] = colitem;
 
                 a.push(cell);
