@@ -4,8 +4,8 @@
   "description": "Pull data from Google API and push to SQL Server",
   "main": "app.js",
   "scripts": {
-    "dev": "node app.js",
-    "test": "echo \"Error: no test specified\"&& exit 1"
+    "dev": "nodemon app",
+    "start": "node app"
   },
   "keywords": [],
   "author": "Andy Johnson",
@@ -13,6 +13,7 @@
   "dependencies": {
     "googleapis": "^49.0.0",
     "mssql": "^6.2.0",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "nodemon": "^2.0.3"
   }
 }

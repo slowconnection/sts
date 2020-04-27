@@ -9,8 +9,16 @@ async function listWorksheets(tgt) {
     });
     //console.log(res);
     //console.log(res.data.sheets[1].properties.gridProperties);
-    res.data.sheets.forEach((s)=>console.log([s.properties.sheetId, s.properties.title, s.properties.gridProperties.rowCount, s.properties.gridProperties.columnCount]));
+    //res.data.sheets.forEach((s) => console.log([s.properties.sheetId, s.properties.title, s.properties.gridProperties.rowCount, s.properties.gridProperties.columnCount]));
+    res.data.sheets.forEach((s) => a.push({
+      sheetid: s.properties.sheetId,
+      title: s.properties.title,
+      rowCount: s.properties.gridProperties.rowCount,
+      colCount: s.properties.gridProperties.columnCount
+    }));
 
-}
+    return a;
+                          
+  }
   
 module.exports = listWorksheets;
