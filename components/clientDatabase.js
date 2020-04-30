@@ -11,7 +11,8 @@ const config = {
     }
 };
 
-function pushToSQL(cells) {
+function writeCellsFeed(cells) {
+    console.log('writeCellsFeed');
     const pool = new sql.ConnectionPool(config);
     
     pool.connect(function (err) {
@@ -44,6 +45,7 @@ function pushToSQL(cells) {
 }
 
 function readSQL() {
+    console.log('readSQL');
     sql.connect(config, function(err) {
         if(err) console.log(err);
 
@@ -61,4 +63,7 @@ function readSQL() {
 }
 
 
-module.exports = pushToSQL;
+module.exports = {
+    writeCellsFeed: writeCellsFeed,
+    readSQL: readSQL
+};

@@ -1,48 +1,18 @@
-const listWS = require ('./components/listWorksheets'); 
-const getMeetingData = require ('./components/getSS'); 
-const fetch = require('node-fetch');
+//my components/config
+const forumAPI = require ('./components/forumAPI');
+const googleAPI = require ('./components/googleAPI'); 
 const meetingListUrl = 'http://www.britishspeedwaysliders.com/stats/api/getMeetingList.php';
-const PushSQL = require('./components/writeSQL');
-
-async function getMeetings() {
-  console.log('getMeetings');
-  //step 1:  grab URL from BSS forum
-  const response = await fetch(meetingListUrl);
-  const meetings = await response.json();
-  const spreadsheets = [];
-
-  //iterate the list of meetings and pull key fields for (a) SQL and (b) Google API
-  meetings.forEach((meeting) => {
-    //identify the SS URLs (needs refining so that only the spreadsheets one is captured)
-    let postedUrls = meeting.post_text.match(/\bhttps?:\/\/\S+/gi);
-    let spreadsheetUrl = postedUrls.map((url) => url.indexOf('/spreadsheets/')>0 ? url : '');
-
-    spreadsheetUrl.forEach((s) => {
-      let a = s.split('/');
-      if(a[3]==='spreadsheets') {
-        spreadsheets.push({
-            topic_id: meeting.topic_id,
-            topic_title: meeting.topic_title,
-            topic_time: meeting.topic_time,
-            topic_first_poster_name: meeting.topic_first_poster_name,
-            spreadsheet_key: a[5]
-        })
-      }
-    });
-    
-  });
-
-  return spreadsheets;
-}
+const clientDatabase = require('./components/clientDatabase');
 
 const app = async () => {
 
     //step 1:  grab URL from BSS forum
-    const spreadsheets = await getMeetings();
+    const meetingPosts = await forumAPI.getMeetingPosts(meetingListUrl);
 
-    spreadsheets.forEach(async (s) => {
-      const ws = await listWS({spreadsheetId: s.spreadsheet_key});
-      console.log(`Listing worksheets for ${s.spreadsheet_key}`, ws);
+    meetingPosts.forEach(async (meetingPost) => {
+      const worksheets = await googleAPI.listWorksheets({spreadsheetId: meetingPost.spreadsheet_key});
+
+      console.log(`Listing worksheets for ${meetingPost.spreadsheet_key} of forum ${meetingPost.forum_id}`, worksheets);
     });
     
     
@@ -58,13 +28,13 @@ const app = async () => {
 
     //step 2:  populate array from the meeting SS using Google API
     //challenge: worksheet(s) may vary in the various templates
-    const tgt = {spreadsheetId:"14oNLHaZHUer_i6hp0bnvyDvpNboQHEtQBi54-itLRWQ", range:"15 Heat!A1:AO44"};
-    const arr = await getMeetingData(tgt);
+    const tgt = {spreadsheetId:"14oNLHaZHUer_i6hp0bnvyDvpNboQHEtQBi54-itLRWQ", range:"15 Heat!A1:AZ100"};
+    const cellsFeed = await googleAPI.getCellsFeed(tgt);
 
-    console.log('arr.length = ', arr.length);
+    console.log('cellsFeed.length = ', cellsFeed.length);
 
     //step 3:  populate SQL database
-    PushSQL(arr);
+    clientDatabase.writeCellsFeed(cellsFeed);
 
 }
 
