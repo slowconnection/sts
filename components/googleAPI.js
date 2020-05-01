@@ -1,7 +1,7 @@
 const { google } = require("googleapis");
 const auth = require("../credentials-load");
 
-async function listWorksheets(tgt) {
+async function listAllWorksheets(tgt) {
     let worksheets = [];
     const sheets = google.sheets({ version: "v4", auth });
     const res = await sheets.spreadsheets.get({
@@ -16,6 +16,21 @@ async function listWorksheets(tgt) {
     }));
 
     return worksheets;
+                          
+  }
+
+  async function listWorksheets(tgt) {
+    let worksheets = [];
+    const {spreadsheetId, validWorksheets } = tgt;
+    const sheets = google.sheets({ version: "v4", auth });
+    const res = await sheets.spreadsheets.get({
+      spreadsheetId: spreadsheetId
+    });
+    res.data.sheets.forEach((s) => {
+      worksheets.push(s.properties.title);
+    });
+
+    return worksheets.filter(e => validWorksheets.indexOf(e.toLowerCase()) !== -1);
                           
   }
 

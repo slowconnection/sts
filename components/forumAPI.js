@@ -2,7 +2,6 @@
 const fetch = require('node-fetch');
 
 async function getMeetingPosts(url) {
-    console.log(`getMeetingPosts ${url}`);
     //step 1:  grab URL from BSS forum
     const response = await fetch(url);
     const meetings = await response.json();
@@ -10,10 +9,12 @@ async function getMeetingPosts(url) {
   
     //iterate the list of meetings and pull key fields for (a) SQL and (b) Google API
     meetings.forEach((meeting) => {
+    //for(const meeting of meetings) {
       //identify the SS URLs (needs refining so that only the spreadsheets one is captured)
       let postedUrls = meeting.post_text.match(/\bhttps?:\/\/\S+/gi);
       let spreadsheetUrl = postedUrls.map((url) => url.indexOf('/spreadsheets/')>0 ? url : '');
-  
+
+      //for(const s of spreadsheetUrl) {
       spreadsheetUrl.forEach((s) => {
         let a = s.split('/');
         if(a[3]==='spreadsheets') {
@@ -25,7 +26,7 @@ async function getMeetingPosts(url) {
               topic_time: meeting.topic_time,
               topic_first_poster_name: meeting.topic_first_poster_name,
               spreadsheet_key: a[5]
-          })
+          });
         }
       });
       
