@@ -1,3 +1,5 @@
+const cron = require('node-cron');
+
 //my components/config
 const forumAPI = require ('./components/forumAPI');
 const googleAPI = require ('./components/googleAPI'); 
@@ -7,8 +9,11 @@ const meetingListUrl = 'http://www.britishspeedwaysliders.com/stats/api/getMeeti
 const validWorksheets = ['15 heat','16 heat','heat scorecard','meeting spreadsheet','team summary'];
 
 const app = async () => {
+
+    const topic_id = await clientDatabase.getTopicId();
+
     //step 1:  grab URL from BSS forum
-    const meetingPosts = await forumAPI.getMeetingPosts(meetingListUrl);
+    const meetingPosts = await forumAPI.getMeetingPosts(`${meetingListUrl}?t=${topic_id}`);
 
     meetingPosts.forEach(async (meetingPost) => {
 
@@ -20,7 +25,7 @@ const app = async () => {
         parent_id: meetingPost.parent_id,
         topic_title: meetingPost.topic_title,
         topic_first_poster_name: meetingPost.topic_first_poster_name,
-        topic_time:  new Date(2020, 04, 01, 3, 24, 0)
+        topic_time: meetingPost.topic_time //new Date(2020, 04, 01, 3, 24, 0)
       });
      
       if (workbook_id > 0) {
@@ -77,4 +82,6 @@ const app = async () => {
 }
 
 //Need to CRON this
-app();
+cron.schedule('* 5 * * *', () => {
+  app();
+});

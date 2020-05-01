@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 
 async function getMeetingPosts(url) {
     //step 1:  grab URL from BSS forum
+    console.log(`getMeetingPosts(${url})`);
     const response = await fetch(url);
     const meetings = await response.json();
     let spreadsheets = [];

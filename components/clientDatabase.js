@@ -49,6 +49,19 @@ async function getWorksheetId(tgt) {
     return worksheet_id;
         
 }
+
+async function getTopicId() {
+    //const pool = new sql.ConnectionPool(config);
+
+    await sql.connect(config);
+    const request = new sql.Request();
+
+    const worksheetResults = await request.execute('upl.getTopicId');
+    const topic_id = await worksheetResults.recordset[0].topic_id;
+
+    return topic_id;
+        
+}
     
 
 async function writeCellsFeed(workbook_id, worksheet_id, cells) {
@@ -107,5 +120,6 @@ module.exports = {
     writeCellsFeed: writeCellsFeed,
     readSQL: readSQL,
     getWorkbookId: getWorkbookId,
-    getWorksheetId: getWorksheetId
+    getWorksheetId: getWorksheetId,
+    getTopicId: getTopicId
 };
