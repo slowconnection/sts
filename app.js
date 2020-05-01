@@ -9,14 +9,10 @@ const validWorksheets = ['15 heat','16 heat','heat scorecard','meeting spreadshe
 const app = async () => {
     //step 1:  grab URL from BSS forum
     const meetingPosts = await forumAPI.getMeetingPosts(meetingListUrl);
-    console.log('meetingPosts.length = ', meetingPosts.length);
-
 
     meetingPosts.forEach(async (meetingPost) => {
-    //for (meetingPost of meetingPosts) {
-      //console.log('meetingPost = ', meetingPost);
+
       //check if the workbook is already known (prevent unnecessary read request to Google API)
-      // **** PLACEHOLDER
       const workbook_id = await clientDatabase.getWorkbookId({
         spreadsheet_key: meetingPost.spreadsheet_key,
         topic_id: meetingPost.topic_id,
@@ -28,12 +24,11 @@ const app = async () => {
       });
      
       if (workbook_id > 0) {
-        
         //list all uploadable worksheets
         const worksheets = await googleAPI.listWorksheets({spreadsheetId: meetingPost.spreadsheet_key, validWorksheets});
         
-        //iterate and upload these worksheets worksheets.forEach(async (worksheet) => {
-        for (const worksheet of worksheets) {
+        //iterate and upload these worksheets 
+        worksheets.forEach(async (worksheet) => {
           let worksheet_id = await clientDatabase.getWorksheetId({
             workbook_id: workbook_id,
             worksheet_title: worksheet
@@ -51,7 +46,7 @@ const app = async () => {
             console.log(`${worksheet} already exists for workbook ${workbook_id}`);
           }
           
-        };
+        });
       } else {
         console.log('Workbook already uploaded');
       };
@@ -82,6 +77,4 @@ const app = async () => {
 }
 
 //Need to CRON this
-app()
-.then(console.log)
-.catch(console.error);
+app();

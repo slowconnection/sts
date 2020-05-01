@@ -52,6 +52,7 @@ async function getWorksheetId(tgt) {
     
 
 async function writeCellsFeed(workbook_id, worksheet_id, cells) {
+    console.log(`writeCellsFeed for workbook(${workbook_id}) and worksheet (${worksheet_id})`);
     const pool = new sql.ConnectionPool(config);
     
     pool.connect(function (err) {
@@ -68,11 +69,7 @@ async function writeCellsFeed(workbook_id, worksheet_id, cells) {
 
         cells.forEach((cell) => {
             table.rows.add(workbook_id, worksheet_id, cell[0], cell[1], cell[2]);
-            //console.log(cell.length);
         });
-        //console.log(`${table.rows} rows added to sql.Table object`);
-        
-        //console.log(table.rows);
         
         const sqlRequest = new sql.Request(pool);
 
