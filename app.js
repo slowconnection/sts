@@ -82,6 +82,6 @@ const app = async () => {
 }
 
 //Need to CRON this
-cron.schedule('* 5 * * *', () => {
+cron.schedule('*/5 * * * *', () => {
   app();
 });
