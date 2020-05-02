@@ -97,28 +97,8 @@ async function writeCellsFeed(workbook_id, worksheet_id, cells) {
     return true;
 }
 
-function readSQL() {
-    console.log('readSQL');
-    sql.connect(config, function(err) {
-        if(err) console.log(err);
-
-        let sqlRequest = new sql.Request();
-
-        let sqlQuery = "select * from tblMeetings where meetingid > 100";
-        sqlRequest.query(sqlQuery, function(err,data) {
-            if(err) console.log(err);
-
-            console.table(data.recordset);
-
-            sql.close();
-        });
-    });
-}
-
-
 module.exports = {
     writeCellsFeed: writeCellsFeed,
-    readSQL: readSQL,
     getWorkbookId: getWorkbookId,
     getWorksheetId: getWorksheetId,
     getTopicId: getTopicId
