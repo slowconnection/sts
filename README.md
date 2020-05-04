@@ -28,7 +28,8 @@ Next steps
   
   Will need a user interface for a few things;
   - season set-up (start date, end date, how many league teams?, squad size, team size, etc
-  - addressing any non-matches
+  - addressing any non-matches (mainly misspelt rider names)
+  - manually adding meetings where the 'ref' didn't post the result on the topic opening post
   
   
 Final steps
