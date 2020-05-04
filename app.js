@@ -10,15 +10,16 @@ const validWorksheets = ['15 heat','16 heat','heat scorecard','meeting spreadshe
 
 const app = async () => {
 
+    //get the most recently processed topic_id
     const topic_id = await clientDatabase.getTopicId();
 
-    //step 1:  grab URL from BSS forum
+    //step 1:  is the forum showing any new meeting posts?
     const meetingPosts = await forumAPI.getMeetingPosts(`${meetingListUrl}?t=${topic_id}`);
     if(meetingPosts.length > 0) {
 
       meetingPosts.forEach(async (meetingPost) => {
 
-        //check if the workbook is already known (prevent unnecessary read request to Google API)
+        //getWorkbookId will return 0 if the workbook is already known
         const workbook_id = await clientDatabase.getWorkbookId({
           spreadsheet_key: meetingPost.spreadsheet_key,
           topic_id: meetingPost.topic_id,
@@ -30,7 +31,7 @@ const app = async () => {
         });
       
         if (workbook_id > 0) {
-          //list all uploadable worksheets
+          //Read request to the Google API to acquire a (filtered) list of worksheets in the current workbook
           const worksheets = await googleAPI.listWorksheets({spreadsheetId: meetingPost.spreadsheet_key, validWorksheets});
           
           //iterate and upload these worksheets 
@@ -39,7 +40,7 @@ const app = async () => {
               workbook_id: workbook_id,
               worksheet_title: worksheet
             });
-            console.log(`worksheet_id = ${worksheet_id}`);
+            //console.log(`worksheet_id = ${worksheet_id}`);
 
             if(worksheet_id !== 0) {
               let tgt = {spreadsheetId:meetingPost.spreadsheet_key, range:`${worksheet}!A1:AZ100`};
@@ -59,26 +60,6 @@ const app = async () => {
         
       });
       
-      
-      //step 1b: iterate the array from step 1 and ascertain which, if any, are not yet in SQL.
-      //console.log(worksheets);
-
-      //step 1c: list all worksheets in the target workbook
-      //const tgt = {spreadsheetId:"14oNLHaZHUer_i6hp0bnvyDvpNboQHEtQBi54-itLRWQ"};
-      //spreadsheets.forEach((spreadsheet) => {
-      //  const ws = await listWS({spreadsheetId: spreadsheet.spreadsheet_key});
-      //});
-      
-
-      //step 2:  populate array from the meeting SS using Google API
-      //challenge: worksheet(s) may vary in the various templates
-      //const tgt = {spreadsheetId:"14oNLHaZHUer_i6hp0bnvyDvpNboQHEtQBi54-itLRWQ", range:"15 Heat!A1:AZ100"};
-      //const cellsFeed = await googleAPI.getCellsFeed(tgt);
-
-      //step 3:  populate SQL database
-      //if(cellsFeed.length > 0) {
-      //  const runSQL = await clientDatabase.writeCellsFeed(cellsFeed);
-      //}
     } else {
       console.log('No new meetings showing on the forum');
       //consider re-looking at any uploads lacking worksheet and/or cells feed
@@ -89,3 +70,4 @@ const app = async () => {
 cron.schedule('*/5 * * * *', () => {
   app();
 });
+//console.log('temporarily disabled');

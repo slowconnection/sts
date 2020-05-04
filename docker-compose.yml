@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  sts_nodejs:
+    container_name: "sts_nodejs"
+    restart: always
+    build: .
+    ports:
+      - "3000:3000"
+    links:
+      - sts_sql
+
+  sts_sql:
+    container_name: "sts_sql"
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment: {
+      ACCEPT_EULA: "Y",
+      SA_PASSWORD: "5ea1Aud10"
+    }
+    ports:
+      - "1430:1433"
+    volumes: 
+      - C:\Users\slowc\source\repos\sts\sql\system:/var/opt/mssql
+    

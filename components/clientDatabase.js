@@ -1,10 +1,10 @@
 const sql = require('mssql');
 
 const config = {
-    server: 'localhost',
-    database: 'STSlive_D520',
-    user: 'bss_stats',
-    password: 'bss_stats',
+    server: 'sts_sql',
+    database: 'bss_stats',
+    user: 'bss_nodejs_app',
+    password: 'bss_nodejs_app',
     port: 1433,
     options: {
         enableArithAbort: true
