@@ -1,6 +1,39 @@
 const { google } = require("googleapis");
 const auth = require("../credentials-load");
 
+async function debugWorkbook(tgt) {
+  const sheets = google.sheets({ version: "v4", auth });
+
+  if(tgt.range != undefined) {
+    
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId: tgt.spreadsheetId, 
+      range: tgt.range 
+    });
+    res.data.values.forEach((rowitem, rowindex) => {
+      rowitem.forEach((colitem, colindex) => {
+          if(colitem !== "") {
+              let cell = [];
+              cell[0] = rowindex + 1;
+              cell[1] = colindex + 1;
+              cell[2] = colitem;
+
+              console.log(cell);
+          }
+      })
+  });
+
+  } else {
+    const res = await sheets.spreadsheets.get({
+      spreadsheetId: tgt.spreadsheetId
+    });
+
+    console.log(res.data.sheets);
+  }
+    
+
+}
+
 async function listAllWorksheets(tgt) {
     let worksheets = [];
     const sheets = google.sheets({ version: "v4", auth });
@@ -60,5 +93,6 @@ async function listAllWorksheets(tgt) {
   
 module.exports = {
   listWorksheets: listWorksheets,
-  getCellsFeed: getCellsFeed
+  getCellsFeed: getCellsFeed,
+  debugWorkbook: debugWorkbook
 };

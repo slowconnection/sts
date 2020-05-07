@@ -66,8 +66,16 @@ const app = async () => {
     }
 }
 
-//Need to CRON this
+function debug() {
+  //let tgt = {spreadsheetId:'1Ezz_MwUX-lGWcJL--h_Ao24gLOj4i5cpu27CYA_RiWA', range:'sheet1!A1:AZ100'};
+  //let tgt = {spreadsheetId: '1t4W18_yKrS4YPlKUM_DsWaeW-KhzO_o5dIDLylDIjcs', range:'GP Challenge!A1:AZ100'};
+  let tgt = {spreadsheetId: '1juZRubDU9qYPWSaxfWk9og-n3m8BnWOFIyg1uCbnUiU'};
+  googleAPI.debugWorkbook(tgt);
+}
+
+//debug();
+
+//Execute the app function every 5 minutes
 cron.schedule('*/5 * * * *', () => {
   app();
 });
-//console.log('temporarily disabled');
